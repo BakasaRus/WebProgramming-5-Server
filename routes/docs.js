@@ -9,7 +9,7 @@ mongoose.connect(
     { useNewUrlParser: true, useCreateIndex: true, }
 ).catch(error => console.error(error));
 
-/* GET docs listing. */
+/* GET docs listing */
 router.get('/', function(req, res) {
     Doc.find({}).sort({updatedAt: 'descending'}).exec((err, docs) => {
         if (err)
@@ -18,6 +18,7 @@ router.get('/', function(req, res) {
     });
 });
 
+/* GET single doc */
 router.get('/:id', function(req, res) {
     Doc.findById(req.params.id, (err, doc) => {
         if (err)
@@ -26,7 +27,7 @@ router.get('/:id', function(req, res) {
     })
 });
 
-/* POST new doc. */
+/* POST new doc */
 router.post('/', function(req, res) {
     let doc = new Doc({
         body: req.body.body,
@@ -34,6 +35,18 @@ router.post('/', function(req, res) {
     });
 
     doc.save(err => {
+        if (err)
+            return res.status(404).send({message: err.message});
+        return res.send({ doc });
+    })
+});
+
+/* PUT updated doc */
+router.put('/:id', function(req, res) {
+    Doc.findByIdAndUpdate(req.params.id, {
+        body: req.body.body,
+        title: req.body.title
+    }, {new: true}, function(err, doc) {
         if (err)
             return res.status(404).send({message: err.message});
         return res.send({ doc });
