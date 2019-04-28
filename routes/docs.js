@@ -53,4 +53,13 @@ router.put('/:id', function(req, res) {
     })
 });
 
+/* DELETE unnecessary doc */
+router.delete('/:id', function (req, res) {
+    Doc.findByIdAndDelete(req.params.id, {}, function (err, doc) {
+        if (err)
+            return res.status(404).send({ message: err.message });
+        return res.send({ doc });
+    })
+});
+
 module.exports = router;
